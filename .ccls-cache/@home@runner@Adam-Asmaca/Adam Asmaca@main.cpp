@@ -3,19 +3,19 @@
 #include<stdlib.h>
 #include<vector>
 #include<fstream>
-#include<dirent.h>
 
 using namespace std;
 
 string dosyaListesi[28] = {"A.txt", "B.txt", "C.txt", "Ç.txt", "D.txt", "E.txt", "F.txt", "G.txt", "H.txt", "I.txt", "İ.txt", "J.txt", "K.txt", "L.txt", "M.txt", "N.txt", "O.txt", "Ö.txt", "P.txt", "R.txt", "S.txt", "Ş.txt", "T.txt", "U.txt", "Ü.txt", "V.txt", "Y.txt", "Z.txt"};
 int kelimeMinUzunluk = 5;
 bool sonlandır = 0;
-string kelimeListe[8] = {"cicek", "hayal", "muz", "kabuk", "fantastik", "sirilsiklam", "keloglan", "bogaz"};
+//string kelimeListe[8] = {"cicek", "hayal", "muz", "kabuk", "fantastik", "sirilsiklam", "keloglan", "bogaz"};
 int hataSayısı = 0;
 int doğruSayısı = 0;
 bool tekrar = 1;
 
 string kelimeAl();
+string HUDayarla(string);
 void yazdır(string*);
 void sor(string, string*);
 
@@ -68,6 +68,15 @@ string kelimeAl(){
   srand(time(0));
 
   return sahteDosya[rand() % (sahteDosya.size() - 1)];
+}
+
+string HUDayarla(string kelime){
+  string kelimeHUD(kelime.size(), '_');
+  char x;
+  for (int i = 0; i < kelime.size(); i++){
+    if (kelime[i] == ' '){kelimeHUD[i] = ' '; doğruSayısı++;}
+  }
+  return kelimeHUD;
 }
 
 void yazdır(string* pkelimeHUD) {
