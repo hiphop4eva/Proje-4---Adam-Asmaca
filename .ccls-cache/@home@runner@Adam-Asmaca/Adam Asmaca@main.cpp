@@ -1,8 +1,9 @@
-#include <iostream>
+#include<iostream>
 #include<string>
 #include<stdlib.h>
 #include<vector>
 #include<fstream>
+#include<dirent.h>
 
 using namespace std;
 
@@ -26,8 +27,6 @@ int main() {
     string kelimeHUD(kelime.size(), '_');
     string* pkelimeHUD = &kelimeHUD;
 
-    if (kelime == "Dosya okumada bir hata oluştu."){cout << kelime; return 1;} 
-
     //cout << endl << endl << kelime << endl;
 
     while (sonlandır == 0){
@@ -50,29 +49,26 @@ int main() {
 string kelimeAl(){
   srand(time(0));
   
-  string dosya = "Kelime Veritabanı\\" + dosyaListesi[rand() % 27];
+  string dosya = "Kelime Veritabanı/" + dosyaListesi[rand() % 27];
+
   cout << dosya << endl;
   string kelime;
 
-  fstream read_file;
-  read_file.open(dosya);
-
-  if (read_file.fail()) {return "Dosya okumada bir hata oluştu.";}
+  ifstream dosyaOku(dosya);
 
   vector<string> sahteDosya;
   string line;
 
-  while(getline(read_file, line)){
+  while(getline(dosyaOku, line)){
     sahteDosya.push_back(line);
   }
   
-  read_file.close();
+  dosyaOku.close();
 
   srand(time(0));
 
   return sahteDosya[rand() % (sahteDosya.size() - 1)];
 }
-
 
 void yazdır(string* pkelimeHUD) {
   cout << R"(______________________________________)" << "\n\n\n";
