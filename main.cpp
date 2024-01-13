@@ -1,10 +1,13 @@
 #include <iostream>
 #include<string>
 #include<stdlib.h>
-
+#include<vector>
+#include<fstream>
 
 using namespace std;
 
+string dosyaListesi[28] = {"A.txt", "B.txt", "C.txt", "Ç.txt", "D.txt", "E.txt", "F.txt", "G.txt", "H.txt", "I.txt", "İ.txt", "J.txt", "K.txt", "L.txt", "M.txt", "N.txt", "O.txt", "Ö.txt", "P.txt", "R.txt", "S.txt", "Ş.txt", "T.txt", "U.txt", "Ü.txt", "V.txt", "Y.txt", "Z.txt"};
+int kelimeMinUzunluk = 5;
 bool sonlandır = 0;
 string kelimeListe[8] = {"cicek", "hayal", "muz", "kabuk", "fantastik", "sirilsiklam", "keloglan", "bogaz"};
 int hataSayısı = 0;
@@ -13,16 +16,17 @@ bool tekrar = 1;
 
 void yazdır(string*);
 void sor(string, string*);
-
+string kelimeAl();
 
 int main() {
 
   while(tekrar == 1){
-    srand(time(0));
 
-    string kelime = kelimeListe[rand() % 7];
+    string kelime = kelimeAl();
     string kelimeHUD(kelime.size(), '_');
     string* pkelimeHUD = &kelimeHUD;
+
+    if (kelime == "Dosya okumada bir hata oluştu."){return 1;} 
 
     //cout << endl << endl << kelime << endl;
 
@@ -41,6 +45,31 @@ int main() {
     }
   }
   return 0;
+}
+
+string kelimeAl(){
+  srand(time(0));
+  
+  string dosya = dosyaListesi[rand() % 27];
+  string kelime;
+
+  fstream read_file;
+  read_file.open(dosya);
+
+  if (read_file.fail()) {return "Dosya okumada bir hata oluştu.";}
+
+  vector<string> sahteDosya;
+  string line;
+
+  while(getline(read_file, line)){
+    sahteDosya.push_back(line);
+  }
+  
+  read_file.close();
+
+  srand(time(0));
+
+  return sahteDosya[rand() % (sahteDosya.size() - 1)];
 }
 
 
