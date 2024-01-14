@@ -8,38 +8,42 @@ using namespace std;
 
 string dosyaListesi[28] = {"A.txt", "B.txt", "C.txt", "Ç.txt", "D.txt", "E.txt", "F.txt", "G.txt", "H.txt", "I.txt", "İ.txt", "J.txt", "K.txt", "L.txt", "M.txt", "N.txt", "O.txt", "Ö.txt", "P.txt", "R.txt", "S.txt", "Ş.txt", "T.txt", "U.txt", "Ü.txt", "V.txt", "Y.txt", "Z.txt"};
 int kelimeMinUzunluk = 5;
-bool sonlandır = 0;
-//string kelimeListe[8] = {"cicek", "hayal", "muz", "kabuk", "fantastik", "sirilsiklam", "keloglan", "bogaz"};
-int hataSayısı = 0;
-int doğruSayısı = 0;
+bool sonlandir = 0;
+int hataSayisi = 0;
+int dogruSayisi = 0;
 bool tekrar = 1;
 
 string kelimeAl();
 string HUDayarla(string);
-void yazdır(string*);
+void yazdir(string*);
 void sor(string, string*);
 
 int main() {
 
   while(tekrar == 1){
+    
+    cout << "Adam asmaca oyununa hoşgeldiniz. Bu oyunda kaç harften oluştuğu verilen bir kelimenin ne olduğunu 5 deneyiş içersinde tahmin etmeniz lazım." << "\n\n" << "Bu oyunda sadece ingilizce alfabesi kullanıldığına dikkat edin lütfen. Dolayısıyla hem sorulan sözcükte hem de sizin girdiğiniz harfte aşağıda gösterildiği gibi Türkçe harfler İngilizce eşleriyle değiştirilmiştir.\n ç = c\n ğ = g\n ı = i\n ö = o\n ş = s\n ü = u" << "\n\n" << "Devam etmek için herhangi bir karakter girin." << endl;
+    cin.get();
+    
+    srand(time(0));
 
     string kelime = kelimeAl();
-    string kelimeHUD(kelime.size(), '_');
+    string kelimeHUD = HUDayarla(kelime);
     string* pkelimeHUD = &kelimeHUD;
 
-    //cout << endl << endl << kelime << endl;
+    //cout << endl << kelime << endl;
 
-    while (sonlandır == 0){
-      yazdır(pkelimeHUD);
+    while (sonlandir == 0){
+      yazdir(pkelimeHUD);
       sor(kelime, pkelimeHUD);
     }
 
-    cout << endl << R"(______________________________________)" << "\nOyun sonlanmıştır\n";
-    
+    cout << endl << R"(______________________________________)" << "\nOyun sonlanmıştır. Doğru kelime \n" << kelime << " idi.\n";
+
     cout << "\nTekrar oynamak istiyorsanız 1 girin. İstemiyorsanız herhangi başka bir karakter girin.\n";
     cin >> tekrar;
     if (tekrar == 1) {
-      sonlandır=0; hataSayısı=0; doğruSayısı=0;
+      sonlandir=0; hataSayisi=0; dogruSayisi=0;
       cout << "\nOyun tekrar başlatılmıştır\n";
     }
   }
@@ -48,13 +52,13 @@ int main() {
 
 string kelimeAl(){
   srand(time(0));
-  
+
   string dosya = "Kelime Veritabanı/" + dosyaListesi[rand() % 27];
 
-  cout << dosya << endl;
-  string kelime;
+  //cout << dosya << endl;
 
-  ifstream dosyaOku(dosya);
+  ifstream dosyaOku;
+  dosyaOku.open(dosya);
 
   vector<string> sahteDosya;
   string line;
@@ -62,26 +66,29 @@ string kelimeAl(){
   while(getline(dosyaOku, line)){
     sahteDosya.push_back(line);
   }
-  
+
   dosyaOku.close();
 
   srand(time(0));
-
+  string kelime = sahteDosya[rand() % (sahteDosya.size() - 1)];
+  while(kelime.size() < kelimeMinUzunluk){
+    srand(time(0));
+    kelime = rand() % (sahteDosya.size() - 1);
+  }
   return sahteDosya[rand() % (sahteDosya.size() - 1)];
 }
 
 string HUDayarla(string kelime){
   string kelimeHUD(kelime.size(), '_');
-  char x;
   for (int i = 0; i < kelime.size(); i++){
-    if (kelime[i] == ' '){kelimeHUD[i] = ' '; doğruSayısı++;}
+    if (kelime[i] == ' '){kelimeHUD[i] = ' '; dogruSayisi++;}
   }
   return kelimeHUD;
 }
 
-void yazdır(string* pkelimeHUD) {
-  cout << R"(______________________________________)" << "\n\n\n";
-  for (int i = 0; i <= hataSayısı; i++){
+void yazdir(string* pkelimeHUD) {
+  cout << R"(______________________________________)" << "\n\n" << "Kelimeniz " << pkelimeHUD->size() << " harften oluşuyor.\n";
+  for (int i = 0; i <= hataSayisi; i++){
     switch (i) {
       case 1:
         cout << R"(_______)" << endl << R"( |)" << endl << R"( |     O)" << endl;
@@ -96,18 +103,18 @@ void yazdır(string* pkelimeHUD) {
         cout << R"( |    / \)" << endl;
         break;
       case 5:
-        cout << R"( |   /   \)" << endl << R"( |)" << endl << R"( -----------)" << "\n\n\n";   
-        sonlandır = 1;
+        cout << R"( |   /   \)" << endl << R"( |)" << endl << R"( -----------)" << "\n\n\n";
+        sonlandir = 1;
         break;
       default:
-      break;
+        break;
     }
-  }  
-  cout << endl << endl << *pkelimeHUD;
+  }
+  cout << "\n\n" << *pkelimeHUD << "\n\n" << 5 - hataSayisi << " canınız var.";
 }
-  
+
 void sor(string kelime, string* pkelimeHUD){
-  if (sonlandır == 1){return;}
+  if (sonlandir == 1){return;}
   char harf;
   cout << "\n\n\nBir harf giriniz. \n";
   cin >> harf;
@@ -115,12 +122,11 @@ void sor(string kelime, string* pkelimeHUD){
   for (int i = 0; i <= kelime.length(); i++){
 
     if (harf == kelime[i]){
-      //cout << "\nKelimenin " << i + 1 << " numaralı harfi " <<"\""<< harf <<"\""<< " harfine uyuyor.\n";
       (*pkelimeHUD)[i] = harf;
       hata = 0;
-      doğruSayısı++;
-        if(doğruSayısı == kelime.length()){
-        sonlandır = 1;
+      dogruSayisi++;
+        if(dogruSayisi == kelime.length()){
+        sonlandir = 1;
         cout << "Kelime " <<"\""<< kelime <<"\""<< " olarak bulunmuştur.\n\n";
         break;
       }
@@ -128,8 +134,8 @@ void sor(string kelime, string* pkelimeHUD){
     }
 
     if (hata == 1 && i == kelime.length()){
-      hataSayısı++;
-      cout << "Bu kelimenin içinde seçilen harf yoktur. " << 5 - hataSayısı  << " canınız kaldı.\n";
+      hataSayisi++;
+      cout << "Bu kelimenin içinde seçilen harf yoktur.\n";
     }
-  }  
+  }
 }
